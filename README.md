@@ -1,75 +1,121 @@
-# React + TypeScript + Vite
+# Stop-and-Wait ARQ Simulator & Interactive Lab
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+An interactive web-based virtual lab demonstrating the **Stop-and-Wait Automatic Repeat reQuest (ARQ)** data-link layer protocol. Features a smooth 3D globe hero scroll canvas, structured protocol theory, interactive pre/post assessment pop-outs with real-time speedometer gauges, and an integrated spaceship simulation lab.
 
-Currently, two official plugins are available:
+---
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+## Architecture & Flow
 
-## React Compiler
+1. **Hero Stage (Section 1):** Fullscreen interactive 3D Globe with smooth scroll transitions built using Three.js and React Three Fiber.
+2. **Aim & Theory (Section 2):** Breakdown of frame transmission, positive acknowledgments (ACKs), timeout retransmission handling, and 1-bit sequence numbering ($0$ and $1$).
+3. **Pre-Test Assessment:** 5-question pop-out diagnostic test evaluated on an animated SVG speedometer gauge.
+4. **Spaceship ARQ Simulation:** Interactive 2D crewmate minigame where users manually route frames, resolve timeouts, and verify checksums/ACKs across terminal nodes.
+5. **Post-Test Assessment:** 5-question pop-out mastery test measuring post-lab protocol comprehension.
+6. **Conclusion & Verification:** Protocol summary and interactive lab completion badge.
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+---
 
-## Expanding the ESLint configuration
+## Tech Stack
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+- **Framework:** React 18 / 19 + TypeScript + Vite
+- **Styling:** Tailwind CSS (Custom Dark Theme with raw OKLCH & HEX tokens)
+- **3D Graphics:** Three.js, `@react-three/fiber`, `@react-three/drei`
+- **Animations:** Framer Motion / Motion
+- **Package Manager:** `pnpm`
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+---
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
+## Prerequisites
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+Ensure you have the following installed on your local machine:
 
+- **Node.js:** `>= 18.0.0`
+- **pnpm:** `>= 8.0.0`
+
+If `pnpm` is not installed globally:
+```bash
+corepack enable
+corepack prepare pnpm@latest --activate
 ```
 
-You can also install [eslint-plugin-react-x](https://npmx.dev/package/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://npmx.dev/package/eslint-plugin-react-dom) for React-specific lint rules:
+---
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+## Installation & Setup
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+1. **Clone the repository:**
+   ```bash
+   git clone [https://github.com/](https://github.com/)<your-username>/<your-repo-name>.git
+   cd <your-repo-name>
+   ```
 
+2. **Install project dependencies:**
+   ```bash
+   pnpm install
+   ```
+
+3. **Start the local development server:**
+   ```bash
+   pnpm dev
+   ```
+
+4. Open your browser and navigate to the local server URL (typically `http://localhost:5173`).
+
+---
+
+## Build & Production Deployment
+
+To generate an optimized production build:
+
+```bash
+pnpm build
 ```
+
+To locally preview the production build output:
+
+```bash
+pnpm preview
+```
+
+---
+
+## Project Structure
+
+```text
+├── public/                 # Static assets and icons
+├── src/
+│   ├── components/         # Main page UI components
+│   │   ├── Earth.tsx       # 3D Earth mesh & custom shaders
+│   │   ├── Scene.tsx       # Three.js canvas scene manager
+│   │   ├── Starfield.tsx   # Particle background
+│   │   ├── Hero.tsx        # Section 1 hero overlay
+│   │   ├── Navbar.tsx      # Sticky reveal navigation bar
+│   │   ├── TheorySection.tsx # Section 2 aim & ARQ protocol theory
+│   │   ├── TestModal.tsx   # Pop-out MCQ assessment modal
+│   │   ├── Speedometer.tsx # SVG gauge needle visualizer
+│   │   └── Conclusion.tsx  # Completion status card
+│   ├── simulation/         # Among Us ARQ Simulation Module
+│   │   ├── components/     # Minigame canvas, crewmate, stations
+│   │   ├── constants.ts    # Game maps, collision bounds, configurations
+│   │   ├── types.ts        # ARQ packet and state types
+│   │   └── SimulationGame.tsx # Simulation entry component
+│   ├── App.tsx             # Root scroll controller & stage coordinator
+│   ├── index.css           # Custom theme variables & base styling
+│   └── main.tsx            # Application entry point
+├── package.json
+├── tailwind.config.ts
+├── tsconfig.json
+└── vite.config.ts
+```
+
+---
+
+# Stop-and-Wait ARQ Simulator & Interactive Lab
+
+**Live Demo:** https://arqsimulationv3.vercel.app/
+
+## Controls & Interaction Guide
+
+- **Hero Scroll:** Use mouse wheel or vertical scroll gestures to trigger the camera rotation and transition into the theory section.
+- **Top Navigation:** Sticky navbar reveals automatically after scrolling past the Hero stage. Click links to jump to specific sections.
+- **Assessments:** Click "Launch Pre-Test" or "Launch Post-Test" to open the interactive modal. Complete the 5 questions to view the speedometer score gauge.
+- **Spaceship Simulation:** Click "LAUNCH SIMULATION" to board the ship. Use `W`, `A`, `S`, `D` or Arrow keys to move, and `E` to interact with communication consoles.
