@@ -34,7 +34,7 @@ export function SimulationSection() {
       <section id="simulation" className="relative z-20 bg-background text-foreground py-20 px-6 md:px-12 border-t border-border">
         <div className="max-w-4xl mx-auto space-y-6">
           <ScrollReveal>
-            <h2 className="text-3xl md:text-5xl font-extrabold tracking-tight uppercase text-primary">
+            <h2 className="text-3xl md:text-5xl font-extrabold tracking-tight text-primary">
               Simulation
             </h2>
           </ScrollReveal>

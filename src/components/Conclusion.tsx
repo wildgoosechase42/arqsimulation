@@ -20,7 +20,7 @@ export function Conclusion({ onReturnToTop }: ConclusionProps) {
         <ScrollReveal>
           <div className="flex items-center gap-3">
             <div className="w-2.5 h-2.5 rounded-full bg-primary shadow-[0_0_12px_var(--primary)]" />
-            <h2 className="text-3xl md:text-5xl font-extrabold tracking-tight uppercase text-primary">
+            <h2 className="text-3xl md:text-5xl font-extrabold tracking-tight text-primary">
               Conclusion
             </h2>
           </div>

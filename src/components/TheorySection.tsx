@@ -16,7 +16,7 @@ export function TheorySection() {
                 </span>
                 <div className="h-px flex-1 bg-border" />
               </div>
-              <h2 className="text-3xl md:text-5xl font-extrabold tracking-tight uppercase text-primary">
+              <h2 className="text-3xl md:text-5xl font-extrabold tracking-tight text-primary">
                 Aim
               </h2>
             </div>
@@ -43,7 +43,7 @@ export function TheorySection() {
                 </span>
                 <div className="h-px flex-1 bg-border" />
               </div>
-              <h2 className="text-3xl md:text-5xl font-extrabold tracking-tight uppercase text-primary">
+              <h2 className="text-3xl md:text-5xl font-extrabold tracking-tight text-primary">
                 Theory
               </h2>
             </div>

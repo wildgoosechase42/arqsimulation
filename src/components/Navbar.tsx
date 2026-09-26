@@ -15,10 +15,10 @@ const NAV_ITEMS: NavItem[] = [
   { id: 'top', label: 'Top', isTop: true },
   { id: 'aim', label: 'Aim' },
   { id: 'theory', label: 'Theory' },
-  { id: 'pretest', label: 'Pre-Test' },
+  { id: 'pretest', label: 'Pretest' },
   { id: 'simulation', label: 'Simulation' },
-  { id: 'posttest', label: 'Post-Test' },
-  { id: 'usecase', label: 'AI Use Case' },
+  { id: 'posttest', label: 'Post test' },
+  { id: 'usecase', label: 'Ai use case' },
   { id: 'conclusion', label: 'Conclusion' }
 ];
 
