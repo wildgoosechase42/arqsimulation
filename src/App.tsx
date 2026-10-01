@@ -19,18 +19,6 @@ export default function App() {
   const progress = useMotionValue(0);
   const touchStartY = useRef<number | null>(null);
 
-  const transitionTo = useCallback((targetStage: number) => {
-    if (isTransitioning || targetStage === stage) return;
-    setIsTransitioning(true);
-    setStage(targetStage);
-    animate(progress, targetStage, {
-      duration: 1.5,
-      ease: [0.65, 0, 0.35, 1],
-      onComplete: () => {
-        setTimeout(() => setIsTransitioning(false), 200);
-      }
-    });
-  }, [stage, isTransitioning, progress]);
 
   useEffect(() => {
     if ('scrollRestoration' in history) {
@@ -44,26 +32,42 @@ export default function App() {
   const isTransitioningRef = useRef(isTransitioning);
   isTransitioningRef.current = isTransitioning;
 
+  const transitionTo = useCallback((targetStage: number) => {
+    if (isTransitioningRef.current || targetStage === stageRef.current) return;
+    if (targetStage === 0) {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    } else {
+      window.scrollTo(0, 0);
+    }
+    setIsTransitioning(true);
+    setStage(targetStage);
+    animate(progress, targetStage, {
+      duration: 1.5,
+      ease: [0.65, 0, 0.35, 1],
+      onComplete: () => {
+        setTimeout(() => setIsTransitioning(false), 200);
+      }
+    });
+  }, [progress]);
+
   useEffect(() => {
     const handleWheel = (e: WheelEvent) => {
       const scrollY = window.scrollY;
-      if (scrollY <= 5) {
-        if (stageRef.current === 0) {
-          if (e.cancelable) e.preventDefault();
-          if (e.deltaY > 20) {
-            transitionTo(1);
-          }
-          return;
+      if (stageRef.current === 0) {
+        if (e.cancelable) e.preventDefault();
+        if (e.deltaY > 20) {
+          transitionTo(1);
         }
-        if (isTransitioningRef.current) {
-          if (e.cancelable) e.preventDefault();
-          return;
-        }
-        if (stageRef.current === 1 && e.deltaY < -20) {
-          if (e.cancelable) e.preventDefault();
-          transitionTo(0);
-          return;
-        }
+        return;
+      }
+      if (isTransitioningRef.current) {
+        if (e.cancelable) e.preventDefault();
+        return;
+      }
+      if (stageRef.current === 1 && scrollY <= 5 && e.deltaY < -20) {
+        if (e.cancelable) e.preventDefault();
+        transitionTo(0);
+        return;
       }
     };
 
@@ -72,7 +76,7 @@ export default function App() {
     };
 
     const handleTouchMove = (e: TouchEvent) => {
-      if (window.scrollY <= 5 && (stageRef.current === 0 || isTransitioningRef.current)) {
+      if (stageRef.current === 0 || isTransitioningRef.current) {
         if (e.cancelable) e.preventDefault();
       }
     };
@@ -83,27 +87,86 @@ export default function App() {
       const deltaY = touchStartY.current - touchEndY;
       const scrollY = window.scrollY;
       
-      if (scrollY <= 5) {
-        if (Math.abs(deltaY) > 30) {
-          if (deltaY > 0 && stageRef.current === 0) {
-            transitionTo(1);
-          } else if (deltaY < 0 && stageRef.current === 1) {
-            transitionTo(0);
-          }
+      if (Math.abs(deltaY) > 30) {
+        if (deltaY > 0 && stageRef.current === 0) {
+          transitionTo(1);
+        } else if (deltaY < 0 && stageRef.current === 1 && scrollY <= 5) {
+          transitionTo(0);
         }
       }
       touchStartY.current = null;
+    };
+
+    const handleKeyDown = (e: KeyboardEvent) => {
+      const activeEl = document.activeElement;
+      if (
+        (activeEl instanceof HTMLElement && (
+          activeEl.tagName === 'INPUT' ||
+          activeEl.tagName === 'TEXTAREA' ||
+          activeEl.tagName === 'SELECT' ||
+          activeEl.isContentEditable
+        )) ||
+        (e.target instanceof HTMLElement && (
+          e.target.tagName === 'INPUT' ||
+          e.target.tagName === 'TEXTAREA' ||
+          e.target.tagName === 'SELECT' ||
+          e.target.isContentEditable
+        ))
+      ) {
+        return;
+      }
+
+      const isDownKey =
+        e.key === 'ArrowDown' ||
+        e.key === 'PageDown' ||
+        (e.key === ' ' && !e.shiftKey && !(e.target instanceof HTMLButtonElement));
+
+      const isUpKey =
+        e.key === 'ArrowUp' ||
+        e.key === 'PageUp' ||
+        (e.key === ' ' && e.shiftKey && !(e.target instanceof HTMLButtonElement));
+
+      if (isTransitioningRef.current) {
+        if (isDownKey || isUpKey) {
+          if (e.cancelable) e.preventDefault();
+        }
+        return;
+      }
+
+      const scrollY = window.scrollY;
+
+      if (stageRef.current === 0) {
+        if (isDownKey) {
+          if (e.cancelable) e.preventDefault();
+          transitionTo(1);
+          return;
+        }
+        if (isUpKey && scrollY <= 5) {
+          if (e.cancelable) e.preventDefault();
+          return;
+        }
+      }
+
+      if (stageRef.current === 1 && scrollY <= 5) {
+        if (isUpKey) {
+          if (e.cancelable) e.preventDefault();
+          transitionTo(0);
+          return;
+        }
+      }
     };
 
     window.addEventListener('wheel', handleWheel, { passive: false });
     window.addEventListener('touchstart', handleTouchStart, { passive: true });
     window.addEventListener('touchmove', handleTouchMove, { passive: false });
     window.addEventListener('touchend', handleTouchEnd, { passive: true });
+    window.addEventListener('keydown', handleKeyDown);
     return () => {
       window.removeEventListener('wheel', handleWheel);
       window.removeEventListener('touchstart', handleTouchStart);
       window.removeEventListener('touchmove', handleTouchMove);
       window.removeEventListener('touchend', handleTouchEnd);
+      window.removeEventListener('keydown', handleKeyDown);
     };
   }, [transitionTo]);
 
